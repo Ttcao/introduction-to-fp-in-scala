@@ -28,8 +28,9 @@ sealed trait Optional[A] {
   def fold[X](
                full: A => X,
                empty: => X
-             ): X = {
-    empty
+             ): X = fold[X] match {
+    case Full(a) => full(a)
+    case Empty() => empty
   }
 
   /*
@@ -46,7 +47,10 @@ sealed trait Optional[A] {
    *  = Emptyy()
    */
   def map[B](f: A => B): Optional[B] =
-    ???
+    f match {
+      case () => Empty()
+      case _ => Full(Optional[B])
+  }
 
   /*
    * Implement flatMap.
