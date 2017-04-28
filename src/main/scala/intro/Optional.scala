@@ -26,10 +26,11 @@ sealed trait Optional[A] {
    *  = 0
    */
   def fold[X](
-    full: A => X,
-    empty: => X
-  ): X =
-    ???
+               full: A => X,
+               empty: => X
+             ): X = {
+    empty
+  }
 
   /*
    * Implement map for Optional[A].
