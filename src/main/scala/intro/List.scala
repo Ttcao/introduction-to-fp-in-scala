@@ -47,8 +47,10 @@ object Lists {
    * scala> Lists.length(List(1, 2, 3, 4))
    * resX: Int = 4
    */
-  def length[A](xs: List[A]): Int =
-    ???
+  def length[A](xs: List[A]): Int = xs match {
+    case List() => 0
+    case List(_) => xs.length
+  }
 
   /*
    * Exercise 2:
@@ -58,8 +60,10 @@ object Lists {
    * scala> Lists.lengthX(List(1, 2, 3, 4))
    * resX: Int = 4
    */
-  def lengthX[A](xs: List[A]): Int =
-    ???
+  def lengthX[A](xs: List[A]): Int = xs match {
+    case List() => 0
+    case List(_) => ???
+  }
 
   /*
    * Exercise 3:
@@ -70,7 +74,7 @@ object Lists {
    * resX: List[Int] = List(1, 2, 3, 4, 5, 6, 7, 8)
    */
   def append[A](x: List[A], y: List[A]): List[A] =
-    ???
+  ???
 
   /*
    * Exercise 4:
@@ -160,4 +164,4 @@ object Lists {
    */
   def ranges(xs: List[Int]): List[(Int, Int)] =
     ???
-}
+  }
