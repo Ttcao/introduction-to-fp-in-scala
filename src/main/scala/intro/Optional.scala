@@ -13,7 +13,7 @@ sealed trait Optional[A] {
   /*
    * Implement fold for Optional.
    *
-   * We often want to work with data structures be breaking them
+   * We often want to work with data structures by breaking them
    * down by cases. All algebraic data structures can be broken
    * down in the same way, a function is provided to handle each
    * case, with the arguments to the data constructors matching the
@@ -25,13 +25,11 @@ sealed trait Optional[A] {
    * scala> Empty().fold(x => x, 0)
    *  = 0
    */
-  def fold[X](
-               full: A => X,
-               empty: => X
-             ): X = this match {
-    case Empty() => empty
-    case Full(a) => full(a)
-  }
+  def fold[X](full: A => X, empty: => X): X =
+    this match {
+      case Empty() => empty
+      case Full(a) => full(a)
+    }
 
   /*
    * Implement map for Optional[A].
@@ -44,12 +42,13 @@ sealed trait Optional[A] {
    *  = Full(11)
    *
    * scala> Empty[Int]().map(x => x + 10)
-   *  = Emptyy()
+   *  = Empty()
    */
-  def map[B](f: A => B): Optional[B] = this match {
+  def map[B](f: A => B): Optional[B] =
+    this match {
       case Empty() => Empty()
       case Full(a) => Full(f(a))
-  }
+    }
 
   /*
    * Implement flatMap.
@@ -68,10 +67,11 @@ sealed trait Optional[A] {
    *
    * Advanced: Try using fold.
    */
-  def flatMap[B](f: A => Optional[B]): Optional[B] = this match {
-    case Empty() => Empty()
-    case Full(a) => f(a)
-  }
+  def flatMap[B](f: A => Optional[B]): Optional[B] =
+    this match {
+      case Empty() => Empty()
+      case Full(a) => f(a)
+    }
 
   /*
    * Extract the value if it is success case otherwise use default value.
@@ -83,10 +83,11 @@ sealed trait Optional[A] {
    * scala> Empty[Int]().getOrElse(10)
    *  = 10
    */
-  def getOrElse(otherwise: => A): A = this match {
-    case Empty() => otherwise
-    case Full(a) => a
-  }
+  def getOrElse(otherwise: => A): A =
+    this match {
+      case Empty() => otherwise
+      case Full(a) => a
+    }
 
   /*
    * Implement choice, take this result if successful otherwise take
@@ -104,10 +105,11 @@ sealed trait Optional[A] {
    * scala> Empty[Int]() ||| Empty[Int]()
    *  = Empty()
    */
-  def |||(alternative: => Optional[A]): Optional[A] = this match {
-    case Empty() => alternative
-    case Full(a) => Full(a)
-  }
+  def |||(alternative: => Optional[A]): Optional[A] =
+    this match {
+      case Empty() => alternative
+      case Full(a) => Full(a)
+    }
 }
 
 case class Full[A](a: A) extends Optional[A]

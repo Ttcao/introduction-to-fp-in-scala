@@ -11,7 +11,7 @@ case class Id[A](value: A) {
    *
    * The following laws must hold:
    *  1) r.map(z => z) == r
-   *  2) r.map(z => f(g(z))) == r.map(g).map(f)
+   *  2) r.map(z => f(g(z))) == r.map(z => g(z)).map(newZ => f(newZ))
    *
    * scala> Id(1).map(x => x + 10)
    *  = Id(11)

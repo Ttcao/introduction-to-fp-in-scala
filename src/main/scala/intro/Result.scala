@@ -37,11 +37,11 @@ sealed trait Result[A] {
    * scala> Fail[Int](NotEnoughInput).fold(_ => 0, x => x)
    *  = 0
    */
-  def fold[X](
-    fail: Error => X,
-    ok: A => X
-  ): X =
-    ???
+  def fold[X](fail: Error => X, ok: A => X): X =
+    this match {
+      case Fail(error) => fail(NotEnoughInput)
+      case Ok(a) => ok(a)
+    }
 
   /*
    * Exercise 2:
@@ -66,7 +66,10 @@ sealed trait Result[A] {
    * Advanced: Try using fold.
    */
   def flatMap[B](f: A => Result[B]): Result[B] =
-    ???
+    this match {
+      case Fail(error) => Fail(NotEnoughInput)
+      case Ok(a) => f(a)
+    }
 
   /*
    * Exercise 3:
@@ -86,7 +89,10 @@ sealed trait Result[A] {
    * Advanced: Try using flatMap.
    */
   def map[B](f: A => B): Result[B] =
-    ???
+    this match {
+      case Fail(error) => Fail(NotEnoughInput)
+      case Ok(a) => Ok(f(a))
+    }
 
   /*
    * Exercise 4:
@@ -100,7 +106,10 @@ sealed trait Result[A] {
    *  = 10
    */
   def getOrElse(otherwise: => A): A =
-    ???
+    this match {
+      case Fail(error) => otherwise
+      case Ok(a) => a
+    }
 
   /*
    * Exercise 5:
@@ -121,7 +130,10 @@ sealed trait Result[A] {
    *  = Fail[Int](UnexpectedInput("?"))
    */
   def |||(alternative: => Result[A]): Result[A] =
-    ???
+    this match {
+      case Fail(error) => alternative
+      case Ok(a) => Ok(a)
+    }
 }
 
 object Result {
@@ -184,7 +196,11 @@ object ResultExample {
    *       if it is not a valid Int :| i.e. use try catch.
    */
   def int(body: String): Result[Int] =
-    ???
+    try {
+      Result(_) => ???
+    } catch {
+      case e: Exception => ???
+    }
 
   /*
    * Parse the operation if it is valid, otherwise fail with InvalidOperation.

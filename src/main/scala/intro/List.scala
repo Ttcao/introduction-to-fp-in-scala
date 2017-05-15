@@ -47,10 +47,20 @@ object Lists {
    * scala> Lists.length(List(1, 2, 3, 4))
    * resX: Int = 4
    */
-  def length[A](xs: List[A]): Int = xs match {
-    case List() => 0
-    case List(_) => xs.length
-  }
+  def length[A](xs: List[A]): Int =
+    xs match {
+      case Nil => 0 //what do you want to return for length of an empty list?
+      // what do you want to return for length of a list with a head and tail?
+      case h :: t => if (t) length(t) else 1
+      }
+    }
+
+//  def go(n: Int, acc: Int): Int =
+//    if (n <= 0) acc
+//    else go(n-1, n*acc)
+//
+//  go(n, 1)
+//}
 
   /*
    * Exercise 2:
@@ -60,10 +70,13 @@ object Lists {
    * scala> Lists.lengthX(List(1, 2, 3, 4))
    * resX: Int = 4
    */
-  def lengthX[A](xs: List[A]): Int = xs match {
-    case List() => 0
-    case List(_) => ???
-  }
+
+  def lengthX[A](xs: List[A]): Int =
+    xs match {
+      case List() => 0
+      case List(h,t) => ???
+    }
+
 
   /*
    * Exercise 3:
@@ -102,8 +115,7 @@ object Lists {
    * scala> Lists.filter(List(1, 2, 3, 4))(i => i < 3)
    * resX: List[Int] = List(1, 2)
    */
-  def filter[A](xs: List[A])(p: A => Boolean): List[A] =
-    ???
+  def filter[A](xs: List[A])(p: A => Boolean): List[A] = ???
 
   /*
    * Exercise 6:
