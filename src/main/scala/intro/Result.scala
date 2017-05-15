@@ -196,11 +196,7 @@ object ResultExample {
    *       if it is not a valid Int :| i.e. use try catch.
    */
   def int(body: String): Result[Int] =
-    try {
-      Result(_) => ???
-    } catch {
-      case e: Exception => ???
-    }
+    ???
 
   /*
    * Parse the operation if it is valid, otherwise fail with InvalidOperation.

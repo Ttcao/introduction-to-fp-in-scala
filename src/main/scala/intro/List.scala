@@ -51,9 +51,33 @@ object Lists {
     xs match {
       case Nil => 0 //what do you want to return for length of an empty list?
       // what do you want to return for length of a list with a head and tail?
-      case h :: t => if (t) length(t) else 1
-      }
+      case h :: t => 1 + length(t)
     }
+
+  // List(1,2,3,4)
+  // head = 1
+  // tail 2,3,4
+  // length(List(1,2,3,4)) => 1 + length(2,3,4)
+
+  // length(List(2,3,4))
+  // 1 + length(3,4)
+
+  // length(3,4)
+  // 1 + length(4)
+
+  // length(List(4))
+  // 1 + length(Nil)
+
+  // length(Nil)
+  // 0
+
+  // 1 + length(2,3,4)
+  // 1 + (1 + length(3,4))
+  // 1 + (1 + (1 + length(4)))
+  // 1 + (1 + (1 + (1 + length(Nil))))
+  // 1 + (1 + (1 + (1 + 0)))
+  // 4
+
 
 //  def go(n: Int, acc: Int): Int =
 //    if (n <= 0) acc
@@ -71,12 +95,11 @@ object Lists {
    * resX: Int = 4
    */
 
-  def lengthX[A](xs: List[A]): Int =
-    xs match {
-      case List() => 0
-      case List(h,t) => ???
-    }
+//  List[A]#foldRight[B](z: B)(f: (A, B) => B)
 
+  def lengthX[A](xs: List[A]): Int =
+    xs.foldRight(0)((_, acc) => 1 + acc)
+//    xs.foldLeft(0)((acc, _) => 1 + acc)
 
   /*
    * Exercise 3:
