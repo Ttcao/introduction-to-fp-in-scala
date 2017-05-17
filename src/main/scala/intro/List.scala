@@ -49,8 +49,7 @@ object Lists {
    */
   def length[A](xs: List[A]): Int =
     xs match {
-      case Nil => 0 //what do you want to return for length of an empty list?
-      // what do you want to return for length of a list with a head and tail?
+      case Nil => 0
       case h :: t => 1 + length(t)
     }
 
@@ -117,7 +116,7 @@ object Lists {
    *
    * Map the given function across each element of the list.
    *
-   * scala> Lists.map(List(1, 2, 3, 4))(x => x + 1)
+   * scala> Lists.map(List(1, 2, 3, 4))(x => x + 1) f: Int => Int
    * resX: List[Int] = List(2, 3, 4, 5)
    *
    * ~~~ Syntax hint: type annotations
@@ -128,7 +127,24 @@ object Lists {
    *     not infer what you mean.
    */
   def map[A, B](xs: List[A])(f: A => B): List[B] =
-    ???
+    xs match {
+      case Nil => Nil
+      case h :: t => f(h) :: map(t)(f)
+    }
+
+  /**
+    * List(4,5,6).map(x => x * 2)
+    *
+    * 4*2 :: List(5,6).map(x => x * 2)
+    * 4*2 :: 5*2 :: List(6).map(x => x * 2)
+    * 4*2 :: 5*2 :: 6*2 :: Nil.map(x => x * 2)
+    * 4*2 :: 5*2 :: 6*2 :: Nil
+    * (8 :: (10 :: (12 :: Nil)))
+    * (8 :: (10 :: List(12)))
+    * (8 :: (List(10,12)))
+    * List(8,10,12)
+    *
+    */
 
   /*
    * Exercise 5:
@@ -138,7 +154,11 @@ object Lists {
    * scala> Lists.filter(List(1, 2, 3, 4))(i => i < 3)
    * resX: List[Int] = List(1, 2)
    */
-  def filter[A](xs: List[A])(p: A => Boolean): List[A] = ???
+  def filter[A](xs: List[A])(p: A => Boolean): List[A] =
+    xs match {
+      case Nil => Nil
+      case h :: t => if (p(h)) h :: filter(t)(p) else filter(t)(p)
+    }
 
   /*
    * Exercise 6:
@@ -154,10 +174,10 @@ object Lists {
    *
    *     Type annotations are required when scala can
    *     not infer what you mean.
+   *
    */
   def reverse[A](xs: List[A]): List[A] =
-    ???
-
+    xs.foldLeft(List.empty[A])((acc, x) => x :: acc)
 
   /*
    * *Challenge* Exercise 7:
