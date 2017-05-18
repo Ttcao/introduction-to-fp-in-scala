@@ -1,5 +1,9 @@
 package intro
 
+import com.sun.javaws.exceptions.InvalidArgumentException
+
+import scala.util.{Failure, Success, Try}
+
 /*
  * Handling errors without exceptions....
  * ======================================
@@ -39,7 +43,7 @@ sealed trait Result[A] {
    */
   def fold[X](fail: Error => X, ok: A => X): X =
     this match {
-      case Fail(error) => fail(NotEnoughInput)
+      case Fail(error) => fail(error)
       case Ok(a) => ok(a)
     }
 
@@ -67,7 +71,7 @@ sealed trait Result[A] {
    */
   def flatMap[B](f: A => Result[B]): Result[B] =
     this match {
-      case Fail(error) => Fail(NotEnoughInput)
+      case Fail(error) => Fail(error)
       case Ok(a) => f(a)
     }
 
@@ -90,7 +94,7 @@ sealed trait Result[A] {
    */
   def map[B](f: A => B): Result[B] =
     this match {
-      case Fail(error) => Fail(NotEnoughInput)
+      case Fail(error) => Fail(error)
       case Ok(a) => Ok(f(a))
     }
 
@@ -107,7 +111,7 @@ sealed trait Result[A] {
    */
   def getOrElse(otherwise: => A): A =
     this match {
-      case Fail(error) => otherwise
+      case Fail(_) => otherwise
       case Ok(a) => a
     }
 
@@ -131,7 +135,7 @@ sealed trait Result[A] {
    */
   def |||(alternative: => Result[A]): Result[A] =
     this match {
-      case Fail(error) => alternative
+      case Fail(_) => alternative
       case Ok(a) => Ok(a)
     }
 }
@@ -196,7 +200,23 @@ object ResultExample {
    *       if it is not a valid Int :| i.e. use try catch.
    */
   def int(body: String): Result[Int] =
-    ???
+    try {
+      val n = body.toInt
+      Ok(n)
+    } catch {
+      case e: NumberFormatException => Result.notANumber(e.getMessage)
+      case e: InvalidArgumentException => Result.notANumber(e.getMessage)
+      case e: Exception => Result.notANumber(e.getMessage)
+    }
+
+  def int2(body: String): Result[Int] =
+    Try(body.toInt) match {
+      case Success(n) => Ok(n)
+      case Failure(err: NumberFormatException) => Result.notANumber(err.getMessage)
+      case Failure(err: InvalidArgumentException) => Result.notANumber(err.getMessage)
+      case Failure(err) => Result.notANumber(err.getMessage)
+    }
+
 
   /*
    * Parse the operation if it is valid, otherwise fail with InvalidOperation.
