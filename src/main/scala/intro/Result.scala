@@ -57,7 +57,7 @@ sealed trait Result[A] {
    *
    * scala> Ok(1).flatMap(x => Ok(x + 10))
    *  = Ok(11)
-   *
+   *+/
    * scala> Ok(1).flatMap(x => Fail[Int](NotEnoughInput))
    *  = Fail(NotEnoughInput)
    *
