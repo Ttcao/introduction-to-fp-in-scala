@@ -108,8 +108,13 @@ object Lists {
    * scala> Lists.append(List(1, 2, 3, 4), List(5, 6, 7, 8))
    * resX: List[Int] = List(1, 2, 3, 4, 5, 6, 7, 8)
    */
-  def append[A](x: List[A], y: List[A]): List[A] =
-  ???
+  def append[A](x: List[A], y: List[A]): List[A] = {
+    x match {
+      case Nil => y
+      case h :: t => h :: append(t, y)
+
+    }
+  }
 
   /*
    * Exercise 4:
@@ -194,7 +199,7 @@ object Lists {
    */
   def sequence[A](xs: List[Option[A]]): Option[List[A]] =
     ???
-
+//  xs.foldRight(0)((_, acc) => 1 + acc)
   /*
    * *Challenge* Exercise 8:
    *

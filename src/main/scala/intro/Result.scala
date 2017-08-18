@@ -222,13 +222,23 @@ object ResultExample {
    * Parse the operation if it is valid, otherwise fail with InvalidOperation.
    */
   def operation(op: String): Result[Operation] =
-    ???
+    op match {
+      case "Plus" => Ok(Plus)
+      case "Minus" => Ok(Minus)
+      case "Multiply" => Ok(Multiply)
+      case _ => Fail(InvalidOperation("Invalid operation"))
+    }
 
   /*
    * Compute an `answer`, by running operation for n and m.
    */
   def calculate(op: Operation, n: Int, m: Int): Int =
-     ???
+    op match {
+      case Plus => n + m
+      case Minus => n - m
+      case Multiply => n * m
+      case _ => 0
+    }
 
   /*
    * Attempt to compute an `answer`, by:
@@ -240,7 +250,11 @@ object ResultExample {
    * hint: use flatMap / map
    */
   def attempt(op: String, n: String, m: String): Result[Int] =
-     ???
+    for {
+      op <- operation(op)
+      x <- Ok(n.toInt)
+      y <- Ok(m.toInt)
+    } yield calculate(op, x, y)
 
   /*
    * Run a calculation by pattern matching three elements off the input arguments,
