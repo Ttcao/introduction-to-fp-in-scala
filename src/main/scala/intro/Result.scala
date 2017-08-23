@@ -1,6 +1,6 @@
 package intro
 
-import com.sun.javaws.exceptions.InvalidArgumentException
+//import com.sun.javaws.exceptions.InvalidArgumentException
 
 import scala.util.{Failure, Success, Try}
 
@@ -205,18 +205,17 @@ object ResultExample {
       Ok(n)
     } catch {
       case e: NumberFormatException => Result.notANumber(e.getMessage)
-      case e: InvalidArgumentException => Result.notANumber(e.getMessage)
+//      case e: InvalidArgumentException => Result.notANumber(e.getMessage)
       case e: Exception => Result.notANumber(e.getMessage)
     }
 
-  def int2(body: String): Result[Int] =
-    Try(body.toInt) match {
-      case Success(n) => Ok(n)
-      case Failure(err: NumberFormatException) => Result.notANumber(err.getMessage)
-      case Failure(err: InvalidArgumentException) => Result.notANumber(err.getMessage)
-      case Failure(err) => Result.notANumber(err.getMessage)
-    }
-
+//  def int2(body: String): Result[Int] =
+//    Try(body.toInt) match {
+//      case Success(n) => Ok(n)
+//      case Failure(err: NumberFormatException) => Result.notANumber(err.getMessage)
+//      case Failure(err: InvalidArgumentException) => Result.notANumber(err.getMessage)
+//      case Failure(err) => Result.notANumber(err.getMessage)
+//    }
 
   /*
    * Parse the operation if it is valid, otherwise fail with InvalidOperation.

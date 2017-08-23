@@ -1,183 +1,236 @@
 package intro
 
 /**
- * A monoid is an identity element paired with an associative
- * binary operation such that the following laws hold:
- *
- * associative:
- *  op(a, op(b, c)) == op(op(a, b), c)
- *
- * right identity:
- *  op(a, identity) == a
- *
- * left identity:
- *  op(identity, a) == a
- */
+  * A monoid is an identity element paired with an associative
+  * binary operation such that the following laws hold:
+  *
+  * associative:
+  * op(a, op(b, c)) == op(op(a, b), c)
+  *
+  * right identity:
+  * op(a, identity) == a
+  *
+  * left identity:
+  * op(identity, a) == a
+  */
 trait Monoid[A] {
   def identity: A
+
   def op(x: A, y: A): A
 }
 
 /* Useful datatypes that have a Monoid */
 case class Sum(n: Int)
+
 case class Product(n: Int)
+
 case class Min(n: Int)
+
 case class Max(n: Int)
+
 case class Size(n: Int)
+
 case class Endo[A](f: A => A)
+
 case class First[A](first: Option[A])
+
 case class Last[A](last: Option[A])
 
 object Monoid {
   /**
-   * Convenience for summoning a Monoid instance.
-   *
-   * usage: Monoid[String].op("yo", "lo")
-   */
+    * Convenience for summoning a Monoid instance.
+    *
+    * usage: Monoid[String].op("yo", "lo")
+    */
   def apply[A: Monoid]: Monoid[A] =
     implicitly[Monoid[A]]
 
   /* Monoid instances */
 
   /** Exercise 1: A monoid which takes the sum of the underlying integer values */
-  implicit def SumMonoid: Monoid[Sum] =
-    ???
+  implicit def SumMonoid: Monoid[Sum] = new Monoid[Sum] {
+    def op(x: Sum, y: Sum): Sum = Sum(x.n + y.n)
+
+    def identity = Sum(0)
+  }
 
   /** Exercise 2: A monoid which takes the multiplication of the underlying integer values */
-  implicit def ProductMonoid: Monoid[Product] =
-    ???
+  implicit def ProductMonoid: Monoid[Product] = new Monoid[Product] {
+    def op(x: Product, y: Product): Product = Product(x.n * x.n)
+
+    def identity: Product = Product(1)
+  }
 
   /** Exercise 3: A monoid which takes the minimum of the underlying integer values */
-  implicit def MinMonoid: Monoid[Min] =
-    ???
+  implicit def MinMonoid: Monoid[Min] = new Monoid[Min] {
+    def op(x: Min, y: Min): Min = if (x.n < y.n) Min(x.n) else Min(y.n)
+
+    def identity: Min = Min(Int.MinValue)
+  }
 
   /** Exercise 4: A monoid which takes the maximum of the underlying integer values */
-  implicit def MaxMonoid: Monoid[Max] =
-    ???
+  implicit def MaxMonoid: Monoid[Max] = new Monoid[Max] {
+    def op(x: Max, y: Max): Max = if (x.n > y.n) Max(x.n) else Max(y.n)
+
+    def identity: Max = Max(Int.MaxValue)
+  }
 
   /** Exercise 5: A monoid which counts the number of underlying values */
-  implicit def SizeMonoid: Monoid[Size] =
-    ???
+  implicit def SizeMonoid: Monoid[Size] = new Monoid[Size] {
+    def op(x: Size, y: Size): Size = Size(x.n + y.n)
+
+    def identity: Size = Size(0)
+  }
 
   /** Exercise 6: A monoid which composes the underlying functions */
-  implicit def EndoMonoid[A]: Monoid[Endo[A]] =
-    ???
+  implicit def EndoMonoid[A]: Monoid[Endo[A]] = new Monoid[Endo[A]] {
+    def op(x: Endo[A], y: Endo[A]): Endo[A] = Endo(x.f andThen y.f)
+
+    def identity: Endo[A] = Endo(a => a)
+  }
 
   /** Exercise 7: A monoid which always takes the first value */
-  implicit def FirstMonoid[A]: Monoid[First[A]] =
-    ???
+  implicit def FirstMonoid[A]: Monoid[First[A]] = new Monoid[First[A]] {
+    def op(x: First[A], y: First[A]): First[A] =
+      x.first match {
+        case None => First(y.first)
+        case Some(a) => First(x.first)
+      }
+
+    def identity: First[A] = First(None)
+  }
 
   /** Exercise 8: A monoid which always takes the last value */
-  implicit def LastMonoid[A]: Monoid[Last[A]] =
-    ???
+  implicit def LastMonoid[A]: Monoid[Last[A]] = new Monoid[Last[A]] {
+    def op(x: Last[A], y: Last[A]): Last[A] =
+      x.last match {
+        case None => Last(y.last)
+        case Some(a) => Last(x.last)
+      }
+
+    def identity: Last[A] = Last(None)
+  }
 
   /** Exercise 9: A monoid which concatenates lists */
-  implicit def ListMonoid[A]: Monoid[List[A]] =
-    ???
+  implicit def ListMonoid[A]: Monoid[List[A]] = new Monoid[List[A]] {
+    def op(x: List[A], y: List[A]): List[A] = x ++ y
+
+    def identity: List[A] = Nil
+  }
 
   /** Exercise 10: A monoid which unions the map, applying op to merge values */
-  implicit def MapMonoid[A, B: Monoid]: Monoid[Map[A, B]] =
-    ???
+  implicit def MapMonoid[A, B: Monoid]: Monoid[Map[A, B]] = new Monoid[Map[A, B]] {
+    def op(x: Map[A, B], y: Map[A, B]): Map[A, B] = ???
+
+    def identity: Map[A, B] = ???
+  }
 
   /*  Monoid library */
 
   import MonoidSyntax._
 
   /**
-   * Exercise 11
-   *
-   * Accumulate a value by summing the result of the map function `f`
-   * applied to each element.
-   *
-   * scala> foldMap(List(1, 2, 3, 4, 5))(x => Sum(x))
-   *  = Sum(15)
-   */
-  def foldMap[A, B: Monoid](xs: List[A])(f: A => B): B =
-    ???
+    * Exercise 11
+    *
+    * Accumulate a value by summing the result of the map function `f`
+    * applied to each element.
+    *
+    * scala> foldMap(List(1, 2, 3, 4, 5))(x => Sum(x))
+    * = Sum(15)
+    **/
+  def foldMap[A, B: Monoid](xs: List[A])(f: A => B): B = {
+    xs.map(x => f(x)).foldLeft(Monoid[B].identity)(Monoid[B].op)
+  }
 
   /**
-   * Exercise 12
-   *
-   * Sum all the elements in the list using the Monoid for A.
-   *
-   * scala> sum(List("hello", " ", "world"))
-   *  = "hello world"
-   */
-  def sum[A: Monoid](xs: List[A]): A =
-    ???
+    * Exercise 12
+    *
+    * Sum all the elements in the list using the Monoid for A.
+    *
+    * scala> sum(List("hello", " ", "world"))
+    * = "hello world"
+    **/
+  def sum[A: Monoid](xs: List[A]): A = {
+    xs.foldLeft(Monoid[A].identity)(Monoid[A].op)
+  }
+
 }
 
 object MonoidSyntax {
+
   implicit class AnyMonoidSyntax[A: Monoid](value: A) {
     def |+|(other: A) =
       Monoid[A].op(value, other)
   }
+
 }
 
 /**
- * *Challenge* Exercise 13
- *
- * We have a data set of ticker prices. Produces a set of statistics for each
- * unique ticker name.
- */
+  * *Challenge* Exercise 13
+  *
+  * We have a data set of ticker prices. Produces a set of statistics for each
+  * unique ticker name.
+  */
 object MonoidChallenge {
+
   import MonoidSyntax._
   import MonoidTupleInstances._
 
   case class Stats(min: Int, max: Int, total: Int, count: Int, average: Int)
+
   case class Stock(ticker: String, date: String, cents: Int)
 
   /**
-   * Compute a map of ticker -> stats from the given data, ignoring any data
-   * points that do _not_ match predicate.
-   *
-   * We want to do this with a single pass over the input data (doing a secondary
-   * pass across the output is ok), so do not use list.filter(..).
-   *
-   * Example, filter out 0 values as they are bad data:
-   *   MonoidChallenge.compute(MonoidChallenge.Data, stock => stock.cents != 0)
-   *
-   * Example, only include particular days of data:
-   *   MonoidChallenge.compute(MonoidChallenge.Data, stock => stock.date == "2012-01-01" || stock.date == "2012-01-02")
-   *
-   * Note there are monoid instances for tuples whos components are all monoids
-   * (this may be useful, but is not the only way to solve this problem).
-   */
+    * Compute a map of ticker -> stats from the given data, ignoring any data
+    * points that do _not_ match predicate.
+    *
+    * We want to do this with a single pass over the input data (doing a secondary
+    * pass across the output is ok), so do not use list.filter(..).
+    *
+    * Example, filter out 0 values as they are bad data:
+    *   MonoidChallenge.compute(MonoidChallenge.Data, stock => stock.cents != 0)
+    *
+    * Example, only include particular days of data:
+    *   MonoidChallenge.compute(MonoidChallenge.Data, stock => stock.date == "2012-01-01" || stock.date == "2012-01-02")
+    *
+    * Note there are monoid instances for tuples whos components are all monoids
+    * (this may be useful, but is not the only way to solve this problem).
+    */
   def compute(data: List[Stock], predicate: Stock => Boolean): Map[String, Stats] =
     ???
 
   def Data = List(
     Stock("FAKE", "2012-01-01", 10000)
-  , Stock("FAKE", "2012-01-02", 10020)
-  , Stock("FAKE", "2012-01-03", 10022)
-  , Stock("FAKE", "2012-01-04", 10005)
-  , Stock("FAKE", "2012-01-05",  9911)
-  , Stock("FAKE", "2012-01-06",  6023)
-  , Stock("FAKE", "2012-01-07",  7019)
-  , Stock("FAKE", "2012-01-08",     0)
-  , Stock("FAKE", "2012-01-09",  7020)
-  , Stock("FAKE", "2012-01-10",  7020)
-  , Stock("CAKE", "2012-01-01",     1)
-  , Stock("CAKE", "2012-01-02",     2)
-  , Stock("CAKE", "2012-01-03",     3)
-  , Stock("CAKE", "2012-01-04",     4)
-  , Stock("CAKE", "2012-01-05",     5)
-  , Stock("CAKE", "2012-01-06",     6)
-  , Stock("CAKE", "2012-01-07",     7)
-  , Stock("BAKE", "2012-01-01", 99999)
-  , Stock("BAKE", "2012-01-02", 99999)
-  , Stock("BAKE", "2012-01-03", 99999)
-  , Stock("BAKE", "2012-01-04", 99999)
-  , Stock("BAKE", "2012-01-05", 99999)
-  , Stock("BAKE", "2012-01-06",     0)
-  , Stock("BAKE", "2012-01-07", 99999)
-  , Stock("LAKE", "2012-01-01", 10012)
-  , Stock("LAKE", "2012-01-02",  7000)
-  , Stock("LAKE", "2012-01-03",  1234)
-  , Stock("LAKE", "2012-01-04",    10)
-  , Stock("LAKE", "2012-01-05",  6000)
-  , Stock("LAKE", "2012-01-06",  6099)
-  , Stock("LAKE", "2012-01-07",  5999)
+    , Stock("FAKE", "2012-01-02", 10020)
+    , Stock("FAKE", "2012-01-03", 10022)
+    , Stock("FAKE", "2012-01-04", 10005)
+    , Stock("FAKE", "2012-01-05", 9911)
+    , Stock("FAKE", "2012-01-06", 6023)
+    , Stock("FAKE", "2012-01-07", 7019)
+    , Stock("FAKE", "2012-01-08", 0)
+    , Stock("FAKE", "2012-01-09", 7020)
+    , Stock("FAKE", "2012-01-10", 7020)
+    , Stock("CAKE", "2012-01-01", 1)
+    , Stock("CAKE", "2012-01-02", 2)
+    , Stock("CAKE", "2012-01-03", 3)
+    , Stock("CAKE", "2012-01-04", 4)
+    , Stock("CAKE", "2012-01-05", 5)
+    , Stock("CAKE", "2012-01-06", 6)
+    , Stock("CAKE", "2012-01-07", 7)
+    , Stock("BAKE", "2012-01-01", 99999)
+    , Stock("BAKE", "2012-01-02", 99999)
+    , Stock("BAKE", "2012-01-03", 99999)
+    , Stock("BAKE", "2012-01-04", 99999)
+    , Stock("BAKE", "2012-01-05", 99999)
+    , Stock("BAKE", "2012-01-06", 0)
+    , Stock("BAKE", "2012-01-07", 99999)
+    , Stock("LAKE", "2012-01-01", 10012)
+    , Stock("LAKE", "2012-01-02", 7000)
+    , Stock("LAKE", "2012-01-03", 1234)
+    , Stock("LAKE", "2012-01-04", 10)
+    , Stock("LAKE", "2012-01-05", 6000)
+    , Stock("LAKE", "2012-01-06", 6099)
+    , Stock("LAKE", "2012-01-07", 5999)
   )
 }
 
